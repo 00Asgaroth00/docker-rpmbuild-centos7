@@ -85,9 +85,13 @@ Then to run it:
 
 ## Building with the latest C++ compiler
 
-Devtools-7 is part of this image. To enable it as part of the building process just add the following environment variable to the docker command:
+Devtools-9 is part of this image. To enable it as part of the building process just add the following environment variable to the docker command:
 
 ```bash
 -e DEVTOOLS=1
 ```
 
+## Building the image
+```bash
+docker build -t asgaroth/rpmbuild-centos7 .
+```
