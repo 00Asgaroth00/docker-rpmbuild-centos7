@@ -4,7 +4,7 @@ pipeline {
     disableConcurrentBuilds()
   }
   agent {
-    label 'docker-amd64'
+    label 'docker'
   }
   environment {
     IMAGE      = "rpmbuild-centos7"
@@ -42,7 +42,6 @@ pipeline {
       build job: 'Docker/docker-rpmbuild-centos7/golang', wait: false
       build job: 'Docker/docker-rpmbuild-centos7/devtools7', wait: false
       build job: 'Docker/docker-rpmbuild-centos7/rust', wait: false
-      build job: 'Docker/docker-rpmbuild-centos7/haskell', wait: false
 
       juxtapose event: 'success'
       sh 'figlet "SUCCESS"'
