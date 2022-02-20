@@ -5,11 +5,15 @@ LABEL maintainer="Jamie Curnow <jc@jc21.com>"
 
 # Disable the mirrorlist because god damn are they useless.
 RUN sed -i 's/^mirrorlist=/#mirrorlist=/' /etc/yum.repos.d/CentOS-Base.repo \
-    && sed -i 's/^#baseurl=/baseurl=/' /etc/yum.repos.d/CentOS-Base.repo
+    && sed -i 's/^#baseurl=/baseurl=/' /etc/yum.repos.d/CentOS-Base.repo \
+    && sed "s|^baseurl=.*/centos/\(.*\)|baseurl=http://ftp.heanet.ie/mirrors/centos/\1|" /etc/yum.repos.d/CentOS-Base.repo
+
+# Setup fastestmirror
+RUN echo "include_only=.uk,.ie" >> /etc/yum/pluginconf.d/fastestmirror.conf
 
 # Yum
 RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-RUN yum localinstall -y https://yum.jc21.com/jc21-yum.rpm
+# RUN yum localinstall -y https://yum.jc21.com/jc21-yum.rpm
 RUN yum -y install deltarpm centos-release-scl
 RUN yum-config-manager --enable rhel-server-rhscl-9-rpms
 RUN yum -y update
