@@ -2,7 +2,7 @@
 
 # Enable devtools if variable is set and not empty
 if [ -n "$DEVTOOLS" ]; then
-    source /opt/rh/devtoolset-11/enable
+    source /opt/rh/devtoolset-${devtoolset_version}/enable
 fi
 
 /bin/build-spec $HOME/rpmbuild/SPECS/*.spec
