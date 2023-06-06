@@ -9,7 +9,7 @@ ENV devtoolset_version=${_devtoolset_version}
 # Disable the mirrorlist because god damn are they useless.
 RUN sed -i 's/^mirrorlist=/#mirrorlist=/' /etc/yum.repos.d/CentOS-Base.repo \
     && sed -i 's/^#baseurl=/baseurl=/' /etc/yum.repos.d/CentOS-Base.repo \
-    && sed "s|^baseurl=.*/centos/\(.*\)|baseurl=http://ftp.heanet.ie/mirrors/centos/\1|" /etc/yum.repos.d/CentOS-Base.repo
+    && sed -i "s|^baseurl=.*/centos/\(.*\)|baseurl=http://ftp.heanet.ie/mirrors/centos/\1|" /etc/yum.repos.d/CentOS-Base.repo
 
 # Setup fastestmirror
 RUN echo "include_only=.uk,.ie" >> /etc/yum/pluginconf.d/fastestmirror.conf
@@ -40,6 +40,11 @@ ADD bin/build-all /bin/
 # Sudo
 ADD etc/sudoers.d/wheel /etc/sudoers.d/
 RUN chown root:root /etc/sudoers.d/*
+
+# Prefer IPv4 over IPv6
+ADD etc/gai.conf /etc/
+RUN chown root:root /etc/gai.conf
+RUN chmod 0644 /etc/gai.conf
 
 # Remove requiretty from sudoers main file
 RUN sed -i '/Defaults    requiretty/c\#Defaults    requiretty' /etc/sudoers
