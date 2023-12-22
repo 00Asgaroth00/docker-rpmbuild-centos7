@@ -95,5 +95,5 @@ Devtools is part of this image. To enable it as part of the building process jus
 The devtoolset version to include in the image can be configured via commandline, the default is devtoolset-7.
 
 ```bash
-export dts_version=11 && docker build --ulimit nofile=1024000:1024000 --build-arg _devtoolset_version=${dts_version} -t asgaroth/rpmbuild-centos7-dts-${dts_version} .
+export dts_version=7 && export local_mirror=https://your.local.mirror && docker buildx build --ulimit nofile=1024000:1024000 --build-arg _devtoolset_version=${dts_version} --build-arg _local_mirror=${local_mirror} --tag asgaroth/rpmbuild-centos7-dts-${dts_version} .
 ```
