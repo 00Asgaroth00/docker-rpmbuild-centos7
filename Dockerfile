@@ -4,28 +4,32 @@ FROM centos:7
 LABEL maintainer="Jamie Curnow <jc@jc21.com>"
 
 ARG _devtoolset_version=7
-ARG _local_mirror=http://ftp.heanet.ie/mirrors
-ARG _epel_mirror=http://mirrors.coreix.net/fedora-epel
+# ARG _local_mirror=http://ftp.heanet.ie/mirrors
+ARG _local_mirror=http://172.16.17.3:8083
+# ARG _epel_mirror=http://mirrors.coreix.net/fedora-epel
+ARG _epel_mirror=http://172.16.17.3:8083
+ARG _sclo_mirror=http://archive.kernel.org/centos-vault
 ENV devtoolset_version=${_devtoolset_version}
 ENV local_mirror=${_local_mirror}
 ENV epel_mirror=${_epel_mirror}
+ENV sclo_mirror=${_sclo_mirror}
 
 # Disable the mirrorlist because god damn are they useless.
 RUN sed -i 's/^mirrorlist=/#mirrorlist=/' /etc/yum.repos.d/CentOS-Base.repo \
     && sed -i 's/^#baseurl=/baseurl=/' /etc/yum.repos.d/CentOS-Base.repo \
-	&& sed -i "s|^baseurl=.*/centos/\(.*\)|baseurl=${local_mirror}/centos/\1|" /etc/yum.repos.d/CentOS-Base.repo
+    && sed -i "s|^baseurl=.*/centos/\(.*\)|baseurl=${local_mirror}/centos/\1|" /etc/yum.repos.d/CentOS-Base.repo
 #    && sed -i "s|^baseurl=.*/centos/\(.*\)|baseurl=http://ftp.heanet.ie/mirrors/centos/\1|" /etc/yum.repos.d/CentOS-Base.repo
 
 RUN yum install -y deltarpm epel-release centos-release-scl
 
 RUN sed -i 's/^metalink=/#metalink=/' /etc/yum.repos.d/epel.repo \
     && sed -i 's/^#baseurl=/baseurl=/' /etc/yum.repos.d/epel.repo \
-	&& sed -i "s|^baseurl=.*/epel/\(.*\)|baseurl=${epel_mirror}/\1|" /etc/yum.repos.d/epel.repo
+    && sed -i "s|^baseurl=.*/epel/\(.*\)|baseurl=${epel_mirror}/epel/\1|" /etc/yum.repos.d/epel.repo
 
 # TODO: seperate out testing/source/debuginfo repo's for the SCL toolsets (already done in nginx docker.proxy, testing/source/debuginfo repos wil fail with current config
 RUN sed -i 's/^mirrorlist=/#mirrorlist=/' /etc/yum.repos.d/CentOS-SCLo-scl.repo /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo\
     && sed -i "s|^#[ ]*baseurl=\(.*\)|baseurl=\1|" /etc/yum.repos.d/CentOS-SCLo-scl.repo /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo\
-    && sed -i "s|^baseurl=.*/centos/\(.*\)|baseurl=${local_mirror}/centos/\1|" /etc/yum.repos.d/CentOS-SCLo-scl.repo /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo
+    && sed -i "s|^baseurl=.*/centos/\(.*\)|baseurl=${sclo_mirror}/centos/\1|" /etc/yum.repos.d/CentOS-SCLo-scl.repo /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo
 
 # Setup fastestmirror
 # RUN echo "include_only=.uk,.ie" >> /etc/yum/pluginconf.d/fastestmirror.conf
