@@ -4,9 +4,11 @@ FROM centos:7
 LABEL maintainer="Jamie Curnow <jc@jc21.com>"
 
 ARG _devtoolset_version=7
-ARG _local_mirror=http://ftp.heanet.ie/mirrors/centos
+ARG _local_mirror=http://ftp.heanet.ie/mirrors
+ARG _epel_mirror=http://mirrors.coreix.net/fedora-epel
 ENV devtoolset_version=${_devtoolset_version}
 ENV local_mirror=${_local_mirror}
+ENV epel_mirror=${_epel_mirror}
 
 # Disable the mirrorlist because god damn are they useless.
 RUN sed -i 's/^mirrorlist=/#mirrorlist=/' /etc/yum.repos.d/CentOS-Base.repo \
@@ -18,7 +20,7 @@ RUN yum install -y deltarpm epel-release centos-release-scl
 
 RUN sed -i 's/^metalink=/#metalink=/' /etc/yum.repos.d/epel.repo \
     && sed -i 's/^#baseurl=/baseurl=/' /etc/yum.repos.d/epel.repo \
-	&& sed -i "s|^baseurl=.*/epel/\(.*\)|baseurl=${local_mirror}/epel/\1|" /etc/yum.repos.d/epel.repo
+	&& sed -i "s|^baseurl=.*/epel/\(.*\)|baseurl=${epel_mirror}/\1|" /etc/yum.repos.d/epel.repo
 
 # TODO: seperate out testing/source/debuginfo repo's for the SCL toolsets (already done in nginx docker.proxy, testing/source/debuginfo repos wil fail with current config
 RUN sed -i 's/^mirrorlist=/#mirrorlist=/' /etc/yum.repos.d/CentOS-SCLo-scl.repo /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo\
